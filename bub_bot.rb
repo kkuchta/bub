@@ -1,13 +1,16 @@
 require 'net/http'
 require 'uri'
 require 'json'
+require './heroku_api'
 
 class BubError < StandardError
 end
 
 class BubBot
   def call(env)
-    puts "Started"
+    @heroku = HerokuApi.new(ENV['HEROKU_API_KEY'])
+
+    puts "Started #@i"
     request = Rack::Request.new(env)
 
     err 'post only' unless request.post?
@@ -19,7 +22,7 @@ class BubBot
     err 'invalid message' unless message.length
 
     command, arguments = message.split(' ', 2)
-    valid_commands = %w(test status)
+    valid_commands = %w(test status ps)
     err "invalid command" unless valid_commands.include? command
 
     send(:"#{command}_command", arguments)
@@ -28,10 +31,6 @@ class BubBot
   rescue BubError => e
     puts "Err: #{e.message}"
     return [400, {}, [e.message]]
-  rescue StandardError => e
-    #puts "Err: #{e.message}"
-    #return [500, {}, []]
-    raise e
   end
 
   def err(msg)
@@ -40,6 +39,17 @@ class BubBot
 
   def test_command(arguments)
     send_message("Test: #{arguments}")
+  end
+
+  def status_command(arguments)
+  end
+
+  def ps_command(aruments)
+    inactive_times = @heroku.ps
+    message = inactive_times.map do |app, inactive_time|
+      "#{app}: last active #{inactive_time}"
+    end.join("\n")
+    send_message(message)
   end
 
   def send_message(message)
