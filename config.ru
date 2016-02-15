@@ -4,5 +4,5 @@ require 'pry'
 
 Bundler.require
 
-require './bub_bot'
+require './lib/bub_bot'
 run BubBot.new

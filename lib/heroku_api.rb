@@ -1,22 +1,26 @@
 require 'platform-api'
 
 class HerokuApi
+  APPS = %w(sassy staging)
   def initialize(api_key)
     puts "API key = #{api_key}"
     @heroku = PlatformAPI.connect_oauth(api_key)
-    @apps = %w(joyable-sassy joyable-staging)
   end
 
-  def ps
-    @apps.map do |app|
-      # 10 lines, since the first couple lines are blank for some reason?
-      #puts "results for #{app}: #{result}"
+  # Get last web activity datetime (or a map of apps to datetimes if no app is
+  # specified)
+  def ps(app=nil)
+    if app.nil?
+      APPS.reduce({}) do |hash, app|
+        hash[app] = ps(app)
+        hash
+      end
+    else
       log_line = web_logs(app).split("\n").last
       if log_line
-        log_time = time_ago(Time.parse(log_line.strip.split(' ').first))
-        [app, log_time]
+        Time.parse(log_line.strip.split(' ').first)
       else
-        [app, 'a while ago']
+        nil
       end
     end
   end
@@ -36,7 +40,10 @@ class HerokuApi
     puts "Fetching #{line_count} log lines"
     return nil if line_count > 10**4
 
-    log_session = @heroku.log_session.create(app, {dyno: 'web.1', lines: line_count})
+    log_session = @heroku.log_session.create(heroku_name(app), {
+      dyno: 'web.1',
+      lines: line_count
+    })
     url = log_session['logplex_url']
     result = Net::HTTP.get(URI(url))
     if result.strip == ''
@@ -46,21 +53,8 @@ class HerokuApi
     end
   end
 
-  # Cheap knockoff version of time_ago_in_words from ActionView
-  def time_ago(time)
-    seconds_ago = (Time.now - time).round
-    return "#{seconds_ago} seconds ago" unless seconds_ago > 60
-
-    minutes_ago = (seconds_ago / 60).round
-    return "#{minutes_ago} minutes ago" unless minutes_ago > 60
-
-    hours_ago = (minutes_ago / 60).round
-    return "#{hours_ago} hours ago" unless hours_ago > 24
-
-    days_ago = (hours_ago / 24).round
-    return "#{days_ago} days ago" unless days_ago > 30
-
-    months_ago = (days_ago / 30).round
-    return "#{months_ago} months ago"
+  def heroku_name(app)
+    "joyable-#{app}"
   end
+
 end
