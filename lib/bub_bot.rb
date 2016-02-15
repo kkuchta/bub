@@ -3,6 +3,9 @@ require 'uri'
 require 'json'
 require './lib/slack_interface'
 
+# TODO: make env variable
+APPS = %w(sassy staging)
+
 class BubError < StandardError
 end
 
