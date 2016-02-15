@@ -18,7 +18,7 @@ class SlackInterface
     user_name = params['user_name']
 
     command, *arguments = message.split(' ')
-    valid_commands = %w(test status ps take help)
+    valid_commands = %w(test status ps take help release)
     err "invalid command #{command}" unless valid_commands.include? command
 
     send(:"#{command}_command", user_name, arguments)
@@ -36,10 +36,32 @@ class SlackInterface
     send_to_slack("Test: #{arguments}")
   end
 
+  def release_command(user, arguments)
+    app = arguments.shift
+    if app
+      raise "invalid app" unless HerokuApi::APPS.include?(app)
+      claim = claims.info(app)
+      if claim[:user] == user && claim[:expires_at] > Time.now
+        claims.take(app, user, 1.minute.ago)
+        send_to_slack("Releasing #{app}")
+      end
+    else
+      HerokuApi::APPS.each do |app|
+        release_command(user, [app])
+      end
+    end
+  end
+
   def help_command(user, arguments)
     send_to_slack <<-help
-      foo
-help
+Bub: the staging box tracking tool.
+
+`bub info` – list all known staging boxes, along with who has them claimed and when that box has last visited (according to the server logs).
+
+`bub take sassy 3 hours` - claim the staging box named joyable-sassy for the next 3 hours. If you omit the time period, bub will assume you want the box for 1 hour.
+
+`bub release sassy` - (TODO) releases your claim on joyable-sassy.  Omit the box name to release your claim on any box currently claimed by you.
+    help
   end
 
   def status_command(user, arguments)
