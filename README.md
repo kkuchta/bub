@@ -54,6 +54,7 @@ Note that this thing uses file storage right now, which means that the 'claims' 
 ## TODO
 - Use something more persistent than file storage.  A database or even a key-value store seems like overkill for storing essentially just 2 keys and a couple fields for each.
 - Display time of last deploy for `status` command
+- Have the 'help' output show up in a PM instead of in #engineering.
 
 ## LICENSE
 MIT (see LICENSE file)
