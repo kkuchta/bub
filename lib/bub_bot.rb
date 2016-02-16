@@ -3,8 +3,9 @@ require 'uri'
 require 'json'
 require './lib/slack_interface'
 
-# TODO: make env variable
+# TODO: make configurable
 APPS = %w(sassy staging)
+APP_PREFIX = "joyable-"
 
 class BubError < StandardError
 end

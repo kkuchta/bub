@@ -16,7 +16,7 @@ class StatusCommand < SlackCommand
           "*free*"
         end
 
-      inactive_time = heroku.ps(app)
+      inactive_time = heroku.last_active_at(app)
       active_message = inactive_time ? time_ago_in_words(inactive_time) : "a while"
 
       message = "#{app}: #{claim_message} (last active #{active_message} ago)"

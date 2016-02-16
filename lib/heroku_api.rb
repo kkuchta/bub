@@ -9,10 +9,10 @@ class HerokuApi
 
   # Get last web activity datetime (or a map of apps to datetimes if no app is
   # specified)
-  def ps(app=nil)
+  def last_active_at(app=nil)
     if app.nil?
       APPS.reduce({}) do |hash, app|
-        hash[app] = ps(app)
+        hash[app] = last_active_at(app)
         hash
       end
     else
@@ -54,7 +54,7 @@ class HerokuApi
   end
 
   def heroku_name(app)
-    "joyable-#{app}"
+    APP_PREFIX + app
   end
 
 end
