@@ -32,7 +32,7 @@ class Claims
       claims_hash = JSON.parse(data)
       claims_hash.each do |app, app_data|
         app_data = app_data.symbolize_keys
-        app_data[:expires_at] = DateTime.parse(app_data[:expires_at])
+        app_data[:expires_at] = DateTime.parse(app_data[:expires_at] || Time.now.to_s)
         claims_hash[app] = app_data
       end
     else
