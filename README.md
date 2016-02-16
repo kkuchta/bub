@@ -19,8 +19,19 @@ Solution: Bub.  Hook it up to your slack channel and use it to track who's using
   - `SLACK_URL="https://hooks.slack.com/services/ABC123/DEF456/gHiJk789`
   - `HEROKU_API_KEY=321dd6dd-1f48-4ca6-9b31-7f5bc8a129f3`
 
+## Usage
+`bub info` – list all known staging boxes, along with who has them claimed and when that box has last visited (according to the server logs).  Aka `status`
+
+`bub take sassy 3 hours` - claim the staging box named joyable-sassy for the next 3 hours. If you omit the time period, bub will assume you want the box for 1 hour. Aka `claim`
+
+`bub release sassy` - releases your claim on joyable-sassy.  Omit the box name to release your claim on any box currently claimed by you. Aka `give`
+
+`bub help` - prints usage text
+
+`bub test foo` repeats whatever you entered (eg `foo`)
+
+
 ## Contributing
 TODO
 ## LICENSE
-MIT
-TODO: add license file
+MIT (see LICENSE file)
