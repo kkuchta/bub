@@ -13,7 +13,7 @@ class SlackInterface
 
   def handle_slack_webhook(payload)
     params =  Rack::Utils.parse_nested_query(payload)
-    err 'invalid token' unless params['token'] == ENV['SLACK_TOKEN']
+    err 'invalid token' unless params['token'] == SLACK_TOKEN
 
     message = params['text'].sub('bub ','')
     err 'invalid message' unless message.length

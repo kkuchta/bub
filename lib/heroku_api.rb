@@ -2,9 +2,8 @@ require 'platform-api'
 
 class HerokuApi
   APPS = %w(sassy staging)
-  def initialize(api_key)
-    puts "API key = #{api_key}"
-    @heroku = PlatformAPI.connect_oauth(api_key)
+  def initialize
+    @heroku = PlatformAPI.connect_oauth(HEROKU_API_KEY)
   end
 
   # Get last web activity datetime (or a map of apps to datetimes if no app is

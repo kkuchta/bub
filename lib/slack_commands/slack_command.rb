@@ -5,7 +5,7 @@ class SlackCommand
   end
 
   def send_to_slack(message)
-    uri = URI.parse(ENV['SLACK_URL'])
+    uri = URI.parse(SLACK_URL)
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
 
@@ -28,7 +28,7 @@ class SlackCommand
   end
 
   def heroku
-    @heroku ||= HerokuApi.new(ENV['HEROKU_API_KEY'])
+    @heroku ||= HerokuApi.new
   end
 
 end
