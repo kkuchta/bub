@@ -19,6 +19,8 @@ Solution: Bub.  Hook it up to your slack channel and use it to track who's using
   - `SLACK_URL="https://hooks.slack.com/services/ABC123/DEF456/gHiJk789`
   - `HEROKU_API_KEY=321dd6dd-1f48-4ca6-9b31-7f5bc8a129f3`
 
+Note that this thing uses file storage right now, which means that the 'claims' data gets wiped every time you deploy or restart.
+
 ## Usage
 `bub info` – list all known staging boxes, along with who has them claimed and when that box has last visited (according to the server logs).  Aka `status`
 
@@ -30,8 +32,28 @@ Solution: Bub.  Hook it up to your slack channel and use it to track who's using
 
 `bub test foo` repeats whatever you entered (eg `foo`)
 
+## Development
 
-## Contributing
-TODO
+1. Set up the integrations.  You'll need:
+
+  - A slack token from (https://api.slack.com/outgoing-webhooks) for receiving messages
+    - You'll need to provide slack with the url of the machine you're developing on. [ngrok](https://ngrok.com/) is a good tool for creating such a url.
+  - A slack url (https://api.slack.com/incoming-webhooks) for sending messages
+  - A heroku platform api key (https://devcenter.heroku.com/articles/platform-api-reference)
+
+  I recommend setting the incoming and outgoing webhooks to use a test channel so you don't spam a normal channel during development.
+
+2. After cloning the repo, run rackup with the correct environment vars locally:
+
+  ```
+    SLACK_TOKEN=AbCdEf123456 SLACK_URL="https://hooks.slack.com/services/ABC123/DEF456/gHiJk789 HEROKU_API_KEY=321dd6dd-1f48-4ca6-9b31-7f5bc8a129f3 rackup
+  ```
+
+3. You should be all set.  Type `bub test hello` and see if bub echos it back to you.
+
+## TODO
+- Use something more persistent than file storage.  A database or even a key-value store seems like overkill for storing essentially just 2 keys and a couple fields for each.
+- Display time of last deploy for `status` command
+
 ## LICENSE
 MIT (see LICENSE file)
