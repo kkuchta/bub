@@ -37,7 +37,7 @@ Note that this thing uses file storage right now, which means that the 'claims' 
 1. Set up the integrations.  You'll need:
 
   - A slack token from (https://api.slack.com/outgoing-webhooks) for receiving messages
-    - You'll need to provide slack with the url of the machine you're developing on. [ngrok](https://ngrok.com/) is a good tool for creating such a url.
+    - You'll need to provide slack with the url of the machine you're developing on. [ngrok](https://ngrok.com/) is a good tool for creating such a url.  Make sure the path for that url is `/slack_hook`
   - A slack url (https://api.slack.com/incoming-webhooks) for sending messages
   - A heroku platform api key (https://devcenter.heroku.com/articles/platform-api-reference)
 

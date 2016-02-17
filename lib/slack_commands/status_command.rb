@@ -11,7 +11,7 @@ class StatusCommand < SlackCommand
         if claim.nil?
           "*never claimed*"
         elsif claim[:expires_at] > Time.now
-          "*#{@user}'s* for the next #{time_ago_in_words(claim[:expires_at])}"
+          "*#{claim[:user]}'s* for the next #{time_ago_in_words(claim[:expires_at])}"
         else
           "*free*"
         end
