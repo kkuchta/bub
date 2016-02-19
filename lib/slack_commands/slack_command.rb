@@ -4,17 +4,19 @@ class SlackCommand
     @arguments = options[:arguments] || []
   end
 
-  def send_to_slack(message)
+  def send_to_slack(message, channel = nil)
     uri = URI.parse(SLACK_URL)
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
 
     request = Net::HTTP::Post.new(uri.request_uri)
     request['Content-Type'] = 'application/json'
-    request.body = {
+    body = {
       text: message,
-      username: 'bub'
-    }.to_json
+      username: 'bub',
+    }
+    body[:channel] = channel if channel
+    request.body = body.to_json
 
     http.request(request)
   end

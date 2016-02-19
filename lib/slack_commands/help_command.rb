@@ -5,7 +5,7 @@ class HelpCommand < SlackCommand
   end
 
   def run
-    send_to_slack <<-help
+    message = <<-help
 `bub`: the staging box tracking tool.
 
 `bub info` – list all known staging boxes, along with who has them claimed and when that box has last visited (according to the server logs).
@@ -16,5 +16,8 @@ class HelpCommand < SlackCommand
 
 `bub help` - prints this message
     help
+
+    send_to_slack('`bub help` prints available commands via direct message to you')
+    send_to_slack(message, '@' + @user)
   end
 end
