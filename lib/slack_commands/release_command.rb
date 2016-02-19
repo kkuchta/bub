@@ -23,7 +23,7 @@ class ReleaseCommand < SlackCommand
   end
 
   def release(app)
-    claim = claims.info(app)
+    claim = claims.info[app]
     if claim[:user] == @user && claim[:expires_at] > Time.now
       claims.take(app, @user, 1.minute.ago)
       send_to_slack("Releasing #{app}")
