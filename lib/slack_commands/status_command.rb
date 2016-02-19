@@ -5,8 +5,9 @@ class StatusCommand < SlackCommand
   end
 
   def run
+    claims_info = claims.info
     APPS.map do |app|
-      claim = claims.info(app)
+      claim = claims_info[app]
       claim_message =
         if claim.nil?
           "*never claimed*"

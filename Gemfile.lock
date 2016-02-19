@@ -40,6 +40,7 @@ GEM
     netrc (0.11.0)
     nokogiri (1.6.7.2)
       mini_portile2 (~> 2.0.0.rc2)
+    pg (0.18.2)
     platform-api (0.5.0)
       heroics
     pry (0.10.3)
@@ -73,6 +74,7 @@ PLATFORMS
 DEPENDENCIES
   actionview
   activesupport
+  pg
   platform-api
   pry-byebug
   thin
