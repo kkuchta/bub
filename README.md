@@ -52,9 +52,9 @@ Note that this thing uses file storage right now, which means that the 'claims' 
 3. You should be all set.  Type `bub test hello` and see if bub echos it back to you.
 
 ## TODO
-- Use something more persistent than file storage.  A database or even a key-value store seems like overkill for storing essentially just 2 keys and a couple fields for each.
 - Display time of last deploy for `status` command
-- Have the 'help' output show up in a PM instead of in #engineering.
+- Allow "silly" commands, accessible from a secondary channel (eg #random)
+- Allow reversible commands (eg `bub sassy release` in addition to `bub release sassy`)
 
 ## LICENSE
 MIT (see LICENSE file)
