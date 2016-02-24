@@ -4,6 +4,7 @@ require 'json'
 require './lib/config.rb'
 require './lib/slack_interface'
 
+
 class BubError < StandardError
 end
 

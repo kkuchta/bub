@@ -1,4 +1,5 @@
 require 'platform-api'
+require './lib/config'
 
 class HerokuApi
   APPS = %w(sassy staging)
@@ -15,8 +16,9 @@ class HerokuApi
         hash
       end
     else
-      log_line = web_logs(app).split("\n").last
-      if log_line
+      log_lines = web_logs(app)
+      if log_lines
+        log_line = log_lines.split("\n").last
         Time.parse(log_line.strip.split(' ').first)
       else
         nil
@@ -50,6 +52,8 @@ class HerokuApi
     else
       result
     end
+  rescue StandardError => e
+    puts "ERR: web_logs got #{e.inspect}"
   end
 
   def heroku_name(app)
