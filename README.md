@@ -55,6 +55,8 @@ Note that this thing uses file storage right now, which means that the 'claims' 
 - Display time of last deploy for `status` command
 - Allow "silly" commands, accessible from a secondary channel (eg #random)
 - Allow reversible commands (eg `bub sassy release` in addition to `bub release sassy`)
+- Send user error messages via PM (eg if you call `release` without any claimed boxes)
+- Add a tech support slack handle (ie me) to the help command output
 
 ## LICENSE
 MIT (see LICENSE file)
