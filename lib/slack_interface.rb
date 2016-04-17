@@ -22,10 +22,16 @@ class SlackInterface
     user_name = params['user_name']
 
     # Call `run` on the appropriate WhateverCommand class
-    command, *arguments = message.split(' ')
+    command, *arguments = message.split(' ').reject(&:empty?)
     command_class = find_command_class(command)
     err("command not found: #{command}") unless command_class
-    command_class.new(arguments: arguments, user: user_name).run
+
+    puts "Received: #{command_class}, with args (#{arguments})"
+    command_class.new(
+      arguments: arguments,
+      user: user_name,
+      channel: params['channel_name']
+    ).run
   end
 
   def find_command_class(command)

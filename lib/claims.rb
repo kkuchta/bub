@@ -1,11 +1,7 @@
 require 'pg'
 require './lib/config'
 
-# Stores who's claimed what between requests.  It uses file storage, which means:
-#   - The claims will by wiped by heroku on deploy and/or restart
-#   - Concurrent access might not do what you expect (unless I add a bunch of
-#     code that wouldn't be worth it)
-# So, TODO: replace this with a db or a key-value store or something.
+# Stores who's claimed what between requests.
 class Claims
   STORAGE_FILENAME = '/tmp/bub_claims'
 
@@ -14,10 +10,16 @@ class Claims
 
     # Postgre 9.4 doesn't support upsert yet, so just insert newer rows in the
     # db.  Then use an annoying query to get the newest for each app in info().
-    conn.prepare('taker', '
-      INSERT INTO claims (app, "user", expires_at, claimed_at)
-      values ($1, $2, $3, $4)
-    ')
+    begin
+      conn.prepare('taker', '
+        INSERT INTO claims (app, "user", expires_at, claimed_at)
+        values ($1, $2, $3, $4)
+      ')
+    rescue PG::DuplicatePstatement
+      # This is fine.  It happens when you call 'take' twice in the same request.
+      # There doesn't seem to be any good way to check if a prepared statement
+      # exists beforehand, so we're just swallong the error.
+    end
     conn.exec_prepared('taker', [app, user, expires_at.utc, Time.now.utc])
   end
 
