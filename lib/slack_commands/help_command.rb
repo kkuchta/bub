@@ -15,6 +15,8 @@ class HelpCommand < SlackCommand
 `bub release sassy` - releases your claim on joyable-sassy.  Omit the box name to release your claim on any box currently claimed by you.
 
 `bub help` - prints this message
+
+Written and maintained by Kevin Kuchta.  Complaints and PRs welcome at https://github.com/kkuchta/bub.
     help
 
     send_to_slack('`bub help` prints available commands via direct message to you')
