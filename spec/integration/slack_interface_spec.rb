@@ -42,6 +42,7 @@ describe SlackInterface do
 
     it 'Shows status' do
 
+      expect_any_instance_of(SlackCommand).to receive(:send_to_slack).with('fluffy: *free* (last active 5 minutes ago)')
       expect_any_instance_of(SlackCommand).to receive(:send_to_slack).with('sassy: *free* (last active 5 minutes ago)')
       expect_any_instance_of(SlackCommand).to receive(:send_to_slack).with('staging: *free* (last active 5 minutes ago)')
 
@@ -55,6 +56,7 @@ describe SlackInterface do
     it 'works even when the heroku dies and returns nil' do
       allow_any_instance_of(HerokuApi).to receive(:last_active_at)
 
+      expect_any_instance_of(SlackCommand).to receive(:send_to_slack).with('fluffy: *free* (last active a while ago)')
       expect_any_instance_of(SlackCommand).to receive(:send_to_slack).with('sassy: *free* (last active a while ago)')
       expect_any_instance_of(SlackCommand).to receive(:send_to_slack).with('staging: *free* (last active a while ago)')
 

@@ -1,5 +1,5 @@
 # TODO: make configurable
-APPS = %w(sassy staging)
+APPS = %w(sassy fluffy staging)
 APP_PREFIX = "joyable-"
 DB_CONNECTION_STRING = ENV['DATABASE_URL'] || 'dbname=bub_bot'
 
