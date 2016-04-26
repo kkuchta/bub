@@ -1,8 +1,5 @@
-require './lib/http_post_interface'
-require './lib/slack_commands/slack_command'
-require './lib/deploys'
-
-Dir['./lib/heroku_commando/*.rb'].each { |file| require file }
+require_relative '../http_post_interface'
+Dir['./lib/slack_commands/*.rb'].each { |file| require file }
 
 class HerokuInterface < HttpPostInterface
   def handle_heroku_webhook(payload)

@@ -2,8 +2,7 @@ require 'net/http'
 require 'uri'
 require 'json'
 require './lib/config.rb'
-require './lib/slack_interface'
-require './lib/heroku_interface'
+Dir['./lib/interfaces/*.rb'].each { |file| require file }
 
 class BubError < StandardError
 end

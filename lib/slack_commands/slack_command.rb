@@ -12,7 +12,7 @@ class SlackCommand
   def send_to_slack(message, channel = (@channel || nil))
     body = {
       text: message,
-      username: 'bub',
+      username: 'bub'
     }
     body[:channel] = channel if channel
     slack_http_request(body)
@@ -43,5 +43,4 @@ class SlackCommand
 
     http.request(request)
   end
-
 end

@@ -17,3 +17,4 @@ class HttpPostInterface
     raise BubError, msg
   end
 end
+

@@ -48,3 +48,4 @@ class DeployCommand < SlackCommand
     end
   end
 end
+

@@ -25,7 +25,6 @@ Dotenv.load('.env.test')
 require 'active_support'
 require 'active_support/core_ext'
 
-
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
@@ -104,3 +103,13 @@ RSpec.configure do |config|
   Kernel.srand config.seed
 =end
 end
+
+def clean_database
+  Deploys.new.conn.exec('drop table deploys;')
+  Deploys.new.conn.exec('create table deploys (app varchar(100), '\
+    '"user" varchar(100), expires_at timestamp);')
+  Deploys.new.conn.exec('drop table claims;')
+  Deploys.new.conn.exec('create table claims (app varchar(100), '\
+    '"user" varchar(100), claimed_at timestamp, expires_at timestamp);')
+end
+
