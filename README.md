@@ -28,6 +28,8 @@ Note that this thing uses file storage right now, which means that the 'claims' 
 
 `bub release sassy` - releases your claim on joyable-sassy.  Omit the box name to release your claim on any box currently claimed by you. Aka `give`
 
+`bub deploy production` - reserves a deploy lock for deploying to production. Will automatically expire after 5 minutes or a deploy has completed.
+
 `bub help` - prints usage text
 
 `bub test foo` repeats whatever you entered (eg `foo`)

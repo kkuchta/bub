@@ -1,20 +1,11 @@
-require './lib/heroku_api'
-require './lib/claims'
-require './lib/config'
-require 'active_support'
-require 'active_support/core_ext'
-require 'action_view'
-require 'action_view/helpers'
-require 'rack/utils'
-Dir["./lib/slack_commands/*.rb"].each {|file| require file }
+require './lib/http_post_interface'
+Dir['./lib/slack_commands/*.rb'].each { |file| require file }
 
-include ActionView::Helpers::DateHelper
-
-class SlackInterface
-  COMMANDS = %w(test status take release help)
+class SlackInterface < HttpPostInterface
+  COMMANDS = %w(test status take release help deploy)
 
   def handle_slack_webhook(payload)
-    params =  Rack::Utils.parse_nested_query(payload)
+    params = Rack::Utils.parse_nested_query(payload)
     err 'invalid token' unless params['token'] == SLACK_TOKEN
 
     message = params['text'].sub('bub ','')
@@ -41,12 +32,6 @@ class SlackInterface
     end
     nil
   end
-
-
-  def err(msg)
-    raise BubError, msg
-  end
-
 end
 
 class TestCommand < SlackCommand

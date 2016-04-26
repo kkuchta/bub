@@ -22,6 +22,10 @@ class SlackCommand
     @claims ||= Claims.new
   end
 
+  def deploys
+    @deploys ||= Deploys.new
+  end
+
   def heroku
     @heroku ||= HerokuApi.new
   end
