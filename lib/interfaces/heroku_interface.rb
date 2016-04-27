@@ -6,13 +6,11 @@ class HerokuInterface < HttpPostInterface
     params = Rack::Utils.parse_nested_query(payload)
     user = params['user'].split('@')[0]
     release = "#{params['release']} " if params['release']
-    server = params['url'].split('/').last.split('.').first[8..-1]
+    server = params['app'].gsub('joyable-', '')
 
     deploys.complete_deploy(server)
 
-    SlackCommand
-      .new
-      .send_to_slack("#{user} just finished deploying #{release}to #{server}.")
+    SlackApi.send_to_slack("#{user} just finished deploying #{release}to #{server}.")
   end
 
   private

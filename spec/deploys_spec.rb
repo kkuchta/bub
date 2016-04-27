@@ -14,7 +14,6 @@ describe Deploys do
   let(:app) { 'production' }
   let(:expires_at) { Time.now - 3000 }
   before do
-    clean_database
     add_deploy(conn, user, app, expires_at)
   end
   describe '#expire_old_deploys' do

@@ -11,7 +11,6 @@ require 'timecop'
 describe SlackInterface do
   let(:user) { 'kevin' }
   let(:interface) { SlackInterface.new }
-  before { clean_database }
   def webhook_args(options)
     {
       user_name: user,
@@ -30,7 +29,7 @@ describe SlackInterface do
 
     it 'prints in the same channel the command was received from' do
       channel = 'some_channel'
-      expect_any_instance_of(SlackCommand)
+      expect(SlackApi)
         .to receive(:slack_http_request)
         .at_least(:once)
         .with(hash_including(channel: '#' + channel))

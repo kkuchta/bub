@@ -14,5 +14,13 @@ namespace :db do
         claimed_at timestamp
       )
     ')
+
+    conn.exec('
+      CREATE TABLE IF NOT EXISTS deploys (
+        app varchar(100),
+        "user" varchar(100),
+        expires_at timestamp
+      )
+    ')
   end
 end

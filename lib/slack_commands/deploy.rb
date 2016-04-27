@@ -6,7 +6,7 @@ require './lib/slack_commands/slack_command'
 class DeployCommand < SlackCommand
   DEPLOYABLE_SERVERS = %w(production prod)
   RESERVABLE_SERVERS = %w(sassy fluffy staging)
-  EXPIRATION_THRESHOLD = 300
+  EXPIRATION_THRESHOLD = 300 #seconds (5 minutes)
 
   def self.aliases
     %w(launch deploy)
