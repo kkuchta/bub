@@ -19,5 +19,7 @@ class SlackApi
 
     http.request(request)
   end
+
+  private_class_method :slack_http_request
 end
 
