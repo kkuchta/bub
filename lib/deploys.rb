@@ -34,7 +34,6 @@ class Deploys
 
   def deploying_user(app)
     user = conn.exec_params('SELECT * FROM deploys WHERE app = $1;', [app])
-    puts user[0].inspect
     user[0]['user']
   end
 
