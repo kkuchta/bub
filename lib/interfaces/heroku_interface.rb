@@ -10,7 +10,9 @@ class HerokuInterface < HttpPostInterface
 
     deploys.complete_deploy(server)
 
-    SlackApi.send_to_slack("#{user} just finished deploying #{release}to #{server}.")
+    if DeployCommand::DEPLOYABLE_SERVERS.include?(server)
+      SlackApi.send_to_slack("#{user} just finished deploying #{release}to #{server}.")
+    end
   end
 
   private
