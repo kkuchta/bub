@@ -25,7 +25,6 @@ Dotenv.load('.env.test')
 require 'active_support'
 require 'active_support/core_ext'
 
-
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
@@ -103,4 +102,17 @@ RSpec.configure do |config|
   # as the one that triggered the failure.
   Kernel.srand config.seed
 =end
+  config.before :each do
+    clean_database
+  end
 end
+
+def clean_database
+  Deploys.new.conn.exec('drop table if exists deploys;')
+  Deploys.new.conn.exec('create table deploys (app varchar(100), '\
+    '"user" varchar(100), expires_at timestamp);')
+  Deploys.new.conn.exec('drop table if exists claims;')
+  Deploys.new.conn.exec('create table claims (app varchar(100), '\
+    '"user" varchar(100), claimed_at timestamp, expires_at timestamp);')
+end
+

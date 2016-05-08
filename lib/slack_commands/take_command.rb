@@ -9,6 +9,7 @@ require './lib/slack_commands/slack_command'
 # two components (time and app), but it'd work for any number of different
 # components.  Maybe use this for more complex commands later?
 class TakeCommand < SlackCommand
+  NO_SERVERS_AVAILABLE_TEXT = 'Sorry, no servers are available.'
   def self.aliases
     %w(take claim)
   end
@@ -27,7 +28,7 @@ class TakeCommand < SlackCommand
 
   def run
     unless @app
-      send_to_slack("Sorry, no servers are available.")
+      send_to_slack(NO_SERVERS_AVAILABLE_TEXT)
       return
     end
 

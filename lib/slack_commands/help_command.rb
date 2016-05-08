@@ -14,6 +14,8 @@ class HelpCommand < SlackCommand
 
 `bub release sassy` - releases your claim on joyable-sassy.  Omit the box name to release your claim on any box currently claimed by you.
 
+`bub deploy production` - reserves a deploy lock for deploying to production. Will automatically expire after 5 minutes or a deploy has completed.
+
 `bub help` - prints this message
 
 Written and maintained by Kevin Kuchta.  Complaints and PRs welcome at https://github.com/kkuchta/bub.

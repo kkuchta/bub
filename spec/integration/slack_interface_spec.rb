@@ -1,6 +1,6 @@
 require 'spec_helper.rb'
 require 'platform-api'
-require './lib/slack_interface'
+require './lib/interfaces/slack_interface'
 require 'heroku_stubs'
 require 'timecop'
 
@@ -13,10 +13,10 @@ describe SlackInterface do
   let(:interface) { SlackInterface.new }
   def webhook_args(options)
     {
-        user_name: user,
-        text: 'bub status',
-        token: SLACK_TOKEN,
-        channel_name: 'general'
+      user_name: user,
+      text: 'bub status',
+      token: SLACK_TOKEN,
+      channel_name: 'general'
     }.merge(options).to_query
   end
 
@@ -29,42 +29,60 @@ describe SlackInterface do
 
     it 'prints in the same channel the command was received from' do
       channel = 'some_channel'
-      expect_any_instance_of(SlackCommand)
+      expect(SlackApi)
         .to receive(:slack_http_request)
         .at_least(:once)
         .with(hash_including(channel: '#' + channel))
 
-      interface.handle_slack_webhook(webhook_args({
+      interface.handle_slack_webhook(webhook_args(
         text: 'bub status',
         channel_name: channel
-      }))
+      ))
     end
 
-    it 'Shows status' do
+    context 'unclaimed servers' do
+      it 'Shows status' do
+        expect_any_instance_of(SlackCommand).to receive(:send_to_slack).with('sassy: *never claimed* (last active 5 minutes ago)')
+        expect_any_instance_of(SlackCommand).to receive(:send_to_slack).with('fluffy: *never claimed* (last active 5 minutes ago)')
+        expect_any_instance_of(SlackCommand).to receive(:send_to_slack).with('staging: *never claimed* (last active 5 minutes ago)')
 
-      expect_any_instance_of(SlackCommand).to receive(:send_to_slack).with('fluffy: *free* (last active 5 minutes ago)')
-      expect_any_instance_of(SlackCommand).to receive(:send_to_slack).with('sassy: *free* (last active 5 minutes ago)')
-      expect_any_instance_of(SlackCommand).to receive(:send_to_slack).with('staging: *free* (last active 5 minutes ago)')
+        interface.handle_slack_webhook({
+          user_name: 'kevin',
+          text: 'bub status',
+          token: SLACK_TOKEN
+        }.to_query)
+      end
 
-      interface.handle_slack_webhook({
-        user_name: 'kevin',
-        text: 'bub status',
-        token: SLACK_TOKEN
-      }.to_query)
+      it 'works even when the heroku dies and returns nil' do
+        allow_any_instance_of(HerokuApi).to receive(:last_active_at)
+
+        expect_any_instance_of(SlackCommand).to receive(:send_to_slack).with('sassy: *never claimed* (last active a while ago)')
+        expect_any_instance_of(SlackCommand).to receive(:send_to_slack).with('fluffy: *never claimed* (last active a while ago)')
+        expect_any_instance_of(SlackCommand).to receive(:send_to_slack).with('staging: *never claimed* (last active a while ago)')
+
+        interface.handle_slack_webhook({
+          user_name: 'kevin',
+          text: 'bub status',
+          token: SLACK_TOKEN
+        }.to_query)
+      end
     end
+    context 'a claimed server' do
+      before do
+        Claims.new.take('sassy', 'kevin', 1.minute.ago)
+        Claims.new.take('fluffy', 'kevin', 1.minute.ago)
+      end
+      it 'shows the status of the claimed server' do
+        expect_any_instance_of(SlackCommand).to receive(:send_to_slack).with('sassy: *free* (last active 5 minutes ago)')
+        expect_any_instance_of(SlackCommand).to receive(:send_to_slack).with('fluffy: *free* (last active 5 minutes ago)')
+        expect_any_instance_of(SlackCommand).to receive(:send_to_slack).with('staging: *never claimed* (last active 5 minutes ago)')
 
-    it 'works even when the heroku dies and returns nil' do
-      allow_any_instance_of(HerokuApi).to receive(:last_active_at)
-
-      expect_any_instance_of(SlackCommand).to receive(:send_to_slack).with('fluffy: *free* (last active a while ago)')
-      expect_any_instance_of(SlackCommand).to receive(:send_to_slack).with('sassy: *free* (last active a while ago)')
-      expect_any_instance_of(SlackCommand).to receive(:send_to_slack).with('staging: *free* (last active a while ago)')
-
-      interface.handle_slack_webhook({
-        user_name: 'kevin',
-        text: 'bub status',
-        token: SLACK_TOKEN
-      }.to_query)
+        interface.handle_slack_webhook({
+          user_name: 'kevin',
+          text: 'bub status',
+          token: SLACK_TOKEN
+        }.to_query)
+      end
     end
   end
 
@@ -110,7 +128,7 @@ describe SlackInterface do
         allow_any_instance_of(Claims).to receive(:info) { claims_info }
 
         expect_any_instance_of(Claims).not_to receive(:take)
-        expect_any_instance_of(SlackCommand).to receive(:send_to_slack).with(anything)
+        expect_any_instance_of(SlackCommand).to receive(:send_to_slack).with(TakeCommand::NO_SERVERS_AVAILABLE_TEXT)
 
         interface.handle_slack_webhook(webhook_args({
           text: 'bub take'
@@ -149,6 +167,53 @@ describe SlackInterface do
         interface.handle_slack_webhook(webhook_args({
           text: 'bub take sassy 3 days'
         }))
+      end
+    end
+  end
+
+  describe 'deploy command' do
+    let(:text) { 'bub deploy' }
+    subject { interface.handle_slack_webhook(webhook_args(text: text)) }
+
+    it 'should validate the params' do
+      expect_any_instance_of(DeployCommand)
+        .to receive(:validate_params)
+      subject
+    end
+
+    context 'non-deployable servers' do
+      let(:text) { 'bub deploy sassy' }
+
+      it 'should show a message' do
+        expect_any_instance_of(SlackCommand)
+          .to receive(:send_to_slack)
+          .with('Please reserve that server using bub take, <@kevin>')
+        subject
+      end
+    end
+
+    context 'production' do
+      let(:text) { 'bub deploy production' }
+      context 'no current deploy' do
+        it 'should allow the user to deploy' do
+          expect_any_instance_of(SlackCommand)
+            .to receive(:send_to_slack)
+            .with('<@kevin> is deploying to production!')
+          subject
+        end
+      end
+      context 'with deploy in progress' do
+        before do
+          allow_any_instance_of(Deploys).to receive(:deploy) { false }
+          allow_any_instance_of(Deploys).to receive(:deploying_user) { 'kevin' }
+        end
+
+        it 'should show a message' do
+          expect_any_instance_of(SlackCommand)
+            .to receive(:send_to_slack)
+            .with('Sorry, <@kevin>, it looks like kevin is already deploying to production.')
+          subject
+        end
       end
     end
   end
