@@ -11,8 +11,8 @@ class SlackCommand
     @arguments = options[:arguments] || []
   end
 
-  def send_to_slack(message)
-    SlackApi.send_to_slack(message, @channel)
+  def send_to_slack(message, channel = nil)
+    SlackApi.send_to_slack(message, channel || @channel)
   end
 
   def claims
