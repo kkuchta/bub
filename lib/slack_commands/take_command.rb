@@ -3,11 +3,14 @@ require './lib/slack_commands/slack_command'
 # Supports `bub take staging 3 hours`, and a number of variants on that:
 #   `bub take`
 #   `bub take 1 hour staging`
+#   `bub take 1 hour staging deploy kk_some_branch`
 #   `bub take staging until tomorrow` <- # TODO
 #
-# Admittedly, the componentize system is overkill here, but since we only have
-# two components (time and app), but it'd work for any number of different
-# components.  Maybe use this for more complex commands later?
+# Actual format is:
+#   `bub take (<app>) (for? <time>) (push|deploy <branch>)
+#
+# The order of the three elements doesn't matter.  Time is optional (defaults to
+# one hour).  Deploy is optional (defaults to not deploying)
 class TakeCommand < SlackCommand
   NO_SERVERS_AVAILABLE_TEXT = 'Sorry, no servers are available.'
   def self.aliases

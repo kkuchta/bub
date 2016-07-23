@@ -2,7 +2,11 @@ require './lib/http_post_interface'
 Dir['./lib/slack_commands/*.rb'].each { |file| require file }
 
 class SlackInterface < HttpPostInterface
-  COMMANDS = %w(test status take release help deploy push)
+
+  # Push command temporarily disabled.  That functionality has been merged into
+  # the claim command.  TODO: either re-enable the push command or delete it,
+  # depending on whether I decide it should be it's own command.
+  COMMANDS = %w(test status take release help deploy)
 
   def handle_slack_webhook(payload)
     params = Rack::Utils.parse_nested_query(payload)
