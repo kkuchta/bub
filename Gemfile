@@ -1,4 +1,4 @@
-ruby '2.2.2'
+ruby '2.3.1'
 source 'https://rubygems.org'
 
 gem 'thin'
@@ -9,3 +9,4 @@ gem 'actionview'
 gem 'pg'
 gem 'dotenv'
 gem 'timecop'
+gem "octokit", "~> 4.0"

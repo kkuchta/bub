@@ -15,3 +15,11 @@ SLACK_URL = ENV['SLACK_URL']
 # https://devcenter.heroku.com/articles/platform-api-reference
 HEROKU_API_KEY = ENV['HEROKU_API_KEY']
 
+# Create a github user with read-only access to your repo.  Then generate a
+# personal access token (https://github.com/settings/tokens) from that user
+# and put it here.
+GITHUB_USER = ENV['GITHUB_USER']
+GITHUB_TOKEN = ENV['GITHUB_TOKEN']
+
+# The repo to read, in username/branch format, eg: `facebook/react`
+GITHUB_REPO = ENV['GITHUB_REPO']

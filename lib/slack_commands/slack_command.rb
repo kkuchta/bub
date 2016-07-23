@@ -1,4 +1,4 @@
-require './lib/slack_api'
+require './lib/apis/slack_api'
 
 class SlackCommand
   def self.can_handle?(command)
@@ -25,5 +25,9 @@ class SlackCommand
 
   def heroku
     @heroku ||= HerokuApi.new
+  end
+
+  def github
+    @github ||= GithubApi.new
   end
 end

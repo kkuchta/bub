@@ -2,7 +2,7 @@ require 'platform-api'
 require './lib/config'
 
 class HerokuApi
-  APPS = %w(sassy staging)
+  APPS = %w(sassy staging) # TODO add fluffy
   def initialize
     @heroku = PlatformAPI.connect_oauth(HEROKU_API_KEY)
   end
@@ -24,6 +24,18 @@ class HerokuApi
         nil
       end
     end
+  end
+
+  def deploy(app, tarball_url)
+    # TODO: set up post-deploy hooks to call back here
+    puts "DEPLOY to #{app}"
+
+    build_config = {
+      source_blob: {
+        url: tarball_url
+      }
+    }
+    result = @heroku.build.create(heroku_name(app), build_config)
   end
 
   private

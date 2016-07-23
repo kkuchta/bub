@@ -1,4 +1,4 @@
-require './lib/heroku_api'
+require './lib/apis/heroku_api'
 require './lib/claims'
 require './lib/deploys'
 require './lib/config'

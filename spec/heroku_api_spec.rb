@@ -1,6 +1,6 @@
 require 'spec_helper.rb'
 require 'heroku_stubs'
-require './lib/heroku_api'
+require './lib/apis/heroku_api'
 
 describe HerokuApi do
   let!(:heroku_api) do

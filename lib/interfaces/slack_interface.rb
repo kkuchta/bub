@@ -2,7 +2,7 @@ require './lib/http_post_interface'
 Dir['./lib/slack_commands/*.rb'].each { |file| require file }
 
 class SlackInterface < HttpPostInterface
-  COMMANDS = %w(test status take release help deploy)
+  COMMANDS = %w(test status take release help deploy push)
 
   def handle_slack_webhook(payload)
     params = Rack::Utils.parse_nested_query(payload)
@@ -28,6 +28,9 @@ class SlackInterface < HttpPostInterface
   def find_command_class(command)
     COMMANDS.each do |candidate|
       candidate_class = (candidate + 'Command').camelize.safe_constantize
+
+      # TODO: Add some "did you mean X?" functionality here for unknown commands
+
       return candidate_class if candidate_class.can_handle?(command)
     end
     nil

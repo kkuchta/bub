@@ -21,9 +21,11 @@ class TakeCommand < SlackCommand
 
     time_component = components.find { |component| component[:type] == 'time' }
     app_component = components.find { |component| component[:type] == 'app' }
+    git_component = components.find { |components| components[:type] == 'git' }
 
     @target_time = time_component.try(:[], :value) || 1.hour.from_now
     @app = app_component.try(:[], :value) || first_available_app
+    @git = git_component&.[](:value)
   end
 
   def run
@@ -34,6 +36,12 @@ class TakeCommand < SlackCommand
 
     claims.take(@app, @user, @target_time)
     message = "#{@user} has #{@app} for the next #{time_ago_in_words(@target_time)}"
+
+    if @git
+      heroku.deploy(@app, github.get_tarball_url(@git))
+      message += " (deploying `#{@git}`)"
+    end
+
     send_to_slack(message)
   end
 
@@ -51,7 +59,9 @@ class TakeCommand < SlackCommand
     arg0 = args.shift
 
     component, remaining_args = 
-      if arg0 == 'for'
+      if %w(push deploy).include?(arg0)
+        componentize_deploy(args)
+      elsif arg0 == 'for'
         componentize_time(args)
       elsif (arg0.to_i) > 0
         componentize_time([arg0] + args)
@@ -64,19 +74,15 @@ class TakeCommand < SlackCommand
       end
 
     [component] + componentize_args(remaining_args)
+  end
 
-    # component, remaining_args = if arg0 == for
-    #   componentize_time(arguments - arg0)
-    # elseif arg0 is integer
-    #   componentize_time(arguments)
-    # elseif arg0 == 'until'
-    #   componentize_until(arguments - arg0)
-    # elsif arg0 is app
-    #   componentize_app(arg0)
-    # else
-    #   raise "didn't understand arg0"
-    # end
-    # component + componentize_args(remaining_args)
+  def componentize_deploy(args)
+    args = args.clone
+    git_identifier = args.shift
+    unless github.identifier_exists?(git_identifier)
+      raise "bad git identifier: #{git_identifier}"
+    end
+    [{type: 'git', value: git_identifier}, args]
   end
 
   def componentize_time(args)
