@@ -10,3 +10,4 @@ gem 'pg'
 gem 'dotenv'
 gem 'timecop'
 gem "octokit", "~> 4.0"
+gem 'rspec'
