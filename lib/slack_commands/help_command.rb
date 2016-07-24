@@ -10,7 +10,10 @@ class HelpCommand < SlackCommand
 
 `bub info` – list all known staging boxes, along with who has them claimed and when that box has last visited (according to the server logs).
 
-`bub take sassy 3 hours` - claim the staging box named joyable-sassy for the next 3 hours. If you omit the time period, bub will assume you want the box for 1 hour.  If you omit the box name, bub will give you the first available server.
+`bub take sassy 3 hours deploy kk_some_branch` - claim the staging box named joyable-sassy for the next 3 hours and deploy the branch `kk_some_branch` to it.  Each section is optional:
+  - If you omit the server, you'll get the first available server.
+  - If you omit the time, you'll get a 1-hour claim.
+  - If you omit the "deploy + branch", the branch won't be auto-deployed.
 
 `bub release sassy` - releases your claim on joyable-sassy.  Omit the box name to release your claim on any box currently claimed by you.
 
