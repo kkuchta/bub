@@ -47,6 +47,6 @@ class TestCommand < SlackCommand
   end
 
   def run
-    send_to_slack(@arguments.join(' '))
+    send_to_slack(@arguments.present? ? @arguments.join(' ') : "I'm here!")
   end
 end
