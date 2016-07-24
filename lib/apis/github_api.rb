@@ -5,7 +5,8 @@ class GithubApi
   def initialize
     @github = Octokit::Client.new(
       login: GITHUB_USER,
-      password: GITHUB_TOKEN
+      password: GITHUB_TOKEN,
+      auto_paginate: true
     )
   end
 
