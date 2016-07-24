@@ -28,7 +28,6 @@ class HerokuApi
 
   def deploy(app, tarball_url)
     # TODO: set up post-deploy hooks to call back here
-    puts "DEPLOY to #{app}"
 
     build_config = {
       source_blob: {

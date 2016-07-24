@@ -1,3 +1,5 @@
+require 'octokit'
+
 # Wrapper for dealing with github's api
 class GithubApi
   def initialize

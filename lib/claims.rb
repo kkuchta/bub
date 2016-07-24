@@ -1,5 +1,6 @@
 require 'pg'
 require './lib/config'
+require './lib/database'
 
 # Stores who's claimed what between requests.
 class Claims
@@ -47,6 +48,6 @@ class Claims
   private
 
   def conn
-    @conn ||= PG.connect(DB_CONNECTION_STRING)
+    DB.conn
   end
 end

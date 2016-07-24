@@ -1,5 +1,6 @@
 require 'pg'
 require './lib/config'
+require './lib/database'
 
 # Stores who is deploying
 class Deploys
@@ -48,7 +49,7 @@ class Deploys
   end
 
   def conn
-    @conn ||= PG.connect(DB_CONNECTION_STRING)
+    DB.conn
   end
 end
 
