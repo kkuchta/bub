@@ -3,11 +3,23 @@ require 'heroku_stubs'
 require './lib/apis/heroku_api'
 
 describe HerokuApi do
-  let!(:heroku_api) do
-    allow(PlatformAPI).to receive(:connect_oauth) { heroku_double([
+  let(:platform_api) do 
+     heroku_double([
       5.minutes.ago
-    ]) }
+    ]) 
+  end
+
+  let!(:heroku_api) do
+    allow(PlatformAPI).to receive(:connect_oauth) { platform_api }
     HerokuApi.new
+  end
+
+  describe 'deploy' do
+    it 'calls out to api' do
+      expect(platform_api.build).to receive(:create)
+
+      heroku_api.deploy('sassy', 'example.com/foobar.tar.gz')
+    end
   end
 
   describe 'web_logs' do

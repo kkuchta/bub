@@ -13,7 +13,9 @@ def heroku_double(log_times)
   end
 
   double(
-    log_session: double(create: { 'logplex_url' => logplex_url })
+    'platform_api',
+    log_session: double(create: { 'logplex_url' => logplex_url }),
+    build: double(create: '')
   )
 
 end
