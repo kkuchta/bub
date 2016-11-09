@@ -41,8 +41,12 @@ class TakeCommand < SlackCommand
     message = "#{@user} has #{@app} for the next #{time_ago_in_words(@target_time)}"
 
     if @git
-      heroku.deploy(@app, github.get_tarball_url(@git))
-      message += " (deploying `#{@git}`)"
+      if HEROKU_APPS.include?(@app)
+        heroku.deploy(@app, github.get_tarball_url(@git))
+        message += " (deploying `#{@git}`)"
+      else
+        message +=" (deploying not currently support for aptible)"
+      end
     end
 
     send_to_slack(message)

@@ -1,5 +1,7 @@
 # TODO: make configurable
-APPS = %w(sassy fluffy staging)
+HEROKU_APPS = %w(fluffy sassy staging)
+APTIBLE_APPS = %w(gyro burrito hotdog)
+APPS = HEROKU_APPS + APTIBLE_APPS
 APP_PREFIX = "joyable-"
 DB_CONNECTION_STRING = ENV['DATABASE_URL'] || 'dbname=bub_bot'
 
