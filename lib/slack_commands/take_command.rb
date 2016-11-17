@@ -44,6 +44,9 @@ class TakeCommand < SlackCommand
       if HEROKU_APPS.include?(@app)
         heroku.deploy(@app, github.get_tarball_url(@git))
         message += " (deploying `#{@git}`)"
+      elsif APTIBLE_APPS.include?(@app)
+        aptible.deploy(@user, @app, @git)
+        message += " (deploying `#{@git}`)"
       else
         message +=" (deploying not currently support for aptible)"
       end

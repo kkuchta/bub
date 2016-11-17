@@ -32,6 +32,9 @@ class PushCommand < SlackCommand
 
       heroku.deploy(@app, tarball_url)
       send_to_slack("Pushing `#{@branch}` to #{@app}")
+    elsif APTIBLE_APPS.include?(@app)
+      aptible.deploy(@user, @app, @branch)
+      send_to_slack("Pushing `#{@branch}` to #{@app}")
     else
       send_to_slack("#{@app} does not currently support deploy via bub. Please push your branch manually.")
     end
