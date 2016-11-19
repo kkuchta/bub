@@ -1,5 +1,3 @@
-require './lib/apis/slack_api'
-
 class SlackCommand
   def self.can_handle?(command)
     aliases.include?(command)
@@ -29,5 +27,9 @@ class SlackCommand
 
   def github
     @github ||= GithubApi.new
+  end
+
+  def aptible
+    @aptible ||= AptibleApi.new
   end
 end

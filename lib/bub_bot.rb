@@ -3,6 +3,7 @@ require 'uri'
 require 'json'
 require './lib/config.rb'
 Dir['./lib/interfaces/*.rb'].each { |file| require file }
+Dir['./lib/apis/*.rb'].each { |file| require file }
 
 class BubError < StandardError
 end
