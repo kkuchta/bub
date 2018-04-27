@@ -1,6 +1,6 @@
 # TODO: make configurable
 HEROKU_APPS = %w()
-APTIBLE_APPS = %w(gyro burrito hotdog)
+APTIBLE_APPS = %w(gyro burrito hotdog cannoli)
 APPS = HEROKU_APPS + APTIBLE_APPS
 APP_VENDOR = "joyable"
 APP_PREFIX = "#{APP_VENDOR}-"
